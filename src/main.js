@@ -57,6 +57,11 @@ async function onFormSubmit(event) {
       return;
     }
 
+    iziToast.success({
+      message: `Hooray! We found ${data.totalHits} images.`,
+      position: 'topRight',
+    });
+
     createGallery(data.hits);
     totalLoadedImages += data.hits.length;
 
