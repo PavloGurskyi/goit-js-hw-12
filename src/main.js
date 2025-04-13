@@ -16,6 +16,7 @@ const loadMoreBtnEl = document.querySelector('.js-load-more');
 
 let query = '';
 let page = 1;
+let totalLoadedImages = 0;
 
 searchFormEl.addEventListener('submit', onFormSubmit);
 loadMoreBtnEl.addEventListener('click', onLoadMore);
@@ -27,6 +28,7 @@ async function onFormSubmit(event) {
 
   query = searchFormEl.elements.search_request.value.trim();
   page = 1;
+  totalLoadedImages = 0;
 
   if (query === '') {
     iziToast.show({
@@ -56,8 +58,9 @@ async function onFormSubmit(event) {
     }
 
     createGallery(data.hits);
+    totalLoadedImages += data.hits.length;
 
-    if (data.totalHits > page * 15) {
+    if (totalLoadedImages < data.totalHits) {
       showLoadMoreButton();
     } else {
       hideLoadMoreButton();
@@ -82,8 +85,9 @@ async function onLoadMore() {
     const data = await getImagesByQuery(query, page);
 
     createGallery(data.hits);
+    totalLoadedImages += data.hits.length;
 
-    if (page * 40 >= data.totalHits) {
+    if (totalLoadedImages >= data.totalHits) {
       hideLoadMoreButton();
       iziToast.info({
         message: "We're sorry, but you've reached the end of search results.",
